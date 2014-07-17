@@ -6,6 +6,7 @@ import subprocess
 import time
 import json
 import glob
+import pagerduty
 
 debug = False
 
@@ -61,6 +62,9 @@ for drive in ls:
             smartInfoKey = smartInfoKey.lstrip()
             smartInfoValue = smartInfoValue.lstrip()
             smartInfoKey = re.sub(' ','_',smartInfoKey)
+            if (smartInfoKey == "SMART_Health_Status"):
+                if (smartInfoValue != "OK"):
+                    trigger_incident(smartInfoKey, description="Drive Monitor Drive Failure", client="guardant", clientURL="corp.guardant.com", smartInfoKey)
             smartInfo = smartInfo+smartInfoKey+"=\""+smartInfoValue+"\", "
         else:
             #otherwise, put it in the unstructured information
