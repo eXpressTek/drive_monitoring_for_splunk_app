@@ -9,6 +9,21 @@ import glob
 import pagerduty
 
 debug = False
+inTesting = True
+
+alreadySeen = []
+alreadySeenFileName = "AlreadySeenDrives.txt"
+#we are going to get the drives that have been written to a file that indicate they have already been checked
+try:
+    f = open(alreadySeenFileName, 'r')
+    alreadySeen = [line.strip() for line in f]
+    f.close()
+except IOError as e:
+    alreadySeen = []
+    f = open(alreadySeenFileName, 'w')
+    f.write("")
+    f.close()
+
 
 rev="1.1"
 #smartctl requires root.
@@ -64,7 +79,12 @@ for drive in ls:
             smartInfoKey = re.sub(' ','_',smartInfoKey)
             if (smartInfoKey == "SMART_Health_Status"):
                 if (smartInfoValue != "OK"):
-                    trigger_incident(smartInfoKey, description="Drive Monitor Drive Failure", client="guardant", clientURL="corp.guardant.com", smartInfoKey)
+                    if (smartInfoKey not in alreadySeen):
+                        trigger_incident(smartInfoKey, smartInfoKey, "Drive Monitor Drive Failure", "guardant", "corp.guardant.com")
+                        f = open(alreadySeenFileName, 'a')
+                        f.write(smartInfoKey+"\n")
+                        f.close()
+                        alreadySeen.append(smartInfoKey)
             smartInfo = smartInfo+smartInfoKey+"=\""+smartInfoValue+"\", "
         else:
             #otherwise, put it in the unstructured information

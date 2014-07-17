@@ -7,7 +7,7 @@ SUBDOMAIN='pdt-dank'
 API_ACCESS_KEY='i8KrMBvvJbhsyh24nxGx'
 
 
-def trigger_incident(incident_key, description="Drive Monitor Drive Failure", client="guardant", clientURL="corp.guardant.com", drive):
+def trigger_incident(incident_key, drive, description="Drive Monitor Drive Failure", client="guardant", clientURL="corp.guardant.com"):
     headers = {
         'Authorization': 'Token token={0}'.format(API_ACCESS_KEY),
         'Content-type': 'application/json',
