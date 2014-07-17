@@ -51,3 +51,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+#Machine-specific Already-Seen Drives
+bin/AlreadySeenDrives.txt
